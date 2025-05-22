@@ -1,0 +1,7 @@
+python-telegram-bot
+python-dotenv
+pymongo
+pytz
+tzdata
+apscheduler
+pip install -U "python-telegram-bot[job-queue]"
