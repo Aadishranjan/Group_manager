@@ -1,4 +1,2 @@
-worker: sh start.sh
-
-rerun "python3 ~/group_manager/bot.py"
+worker: sh run.sh
 

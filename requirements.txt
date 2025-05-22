@@ -1,7 +1,6 @@
-python-telegram-bot==20.6
+python-telegram-bot[job-queue]==20.6
 python-dotenv
 pymongo
 pytz
 tzdata
 apscheduler
-python-telegram-bot[job-queue]==20.6
