@@ -2,7 +2,6 @@ import asyncio
 import logging
 import sys
 import traceback
-
 from datetime import timezone
 from telegram import Update, Bot
 from telegram.ext import (
@@ -18,6 +17,9 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from config import BOT_TOKEN, ADMIN_ID
 from plugins.function import start
 from plugins.group import welcome_new_member
+from plugins import mute
+from plugins.antilink import delete_links
+
 
 # Global scheduler
 scheduler = AsyncIOScheduler(timezone=timezone.utc)
@@ -39,8 +41,16 @@ def main():
 
         # Handlers
         app.add_handler(CommandHandler("start", start))
+        
+        app.add_handler(CommandHandler("mute", mute.mute_user))
+        app.add_handler(CommandHandler("unmute", mute.unmute_user))
+        app.add_handler(CommandHandler("ban", mute.ban_user))
+        app.add_handler(CommandHandler("unban", mute.unban_user))
+        app.add_handler(CommandHandler("warn", mute.warn_user))
+        app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), delete_links))
         app.add_handler(CallbackQueryHandler(help_callback, pattern="^help_command$"))
         app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome_new_member))
+        
 
         print("✅ Bot is running...")
         app.run_polling()

@@ -6,8 +6,8 @@ from telegram.ext import ContextTypes
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     photo_urls = [
-        "https://i.ibb.co/r2rCVPMj/welcome.webp",
-        "https://i.ibb.co/WvSptPY5/welcome2.webp"
+        "https://i.ibb.co/fPxCsZQ/welcome3.webp",
+        "https://i.ibb.co/Xf2xC19c/welcome.webp", "https://i.ibb.co/ZpxF6MMQ/welcome4.webp", "https://i.ibb.co/m59xPfHn/welcome2.webp"
     ]
     selected_photo = random.choice(photo_urls)
 
