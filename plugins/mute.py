@@ -9,7 +9,7 @@ UNMUTE_PERMISSIONS = ChatPermissions(can_send_messages=True)
 
 async def mute_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not update.message.reply_to_message:
-        await update.message.reply_text("Reply to a user to mute them.")
+        await update.message.reply_text("Tag a user to mute them.")
         return
 
     user = update.message.reply_to_message.from_user
@@ -25,7 +25,7 @@ async def mute_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def unmute_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not update.message.reply_to_message:
-        await update.message.reply_text("Reply to a user to unmute them.")
+        await update.message.reply_text("Tag a user to unmute them.")
         return
 
     user = update.message.reply_to_message.from_user
@@ -41,7 +41,7 @@ async def unmute_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def ban_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not update.message.reply_to_message:
-        await update.message.reply_text("Reply to a user to ban them.")
+        await update.message.reply_text("Tag a user to ban them.")
         return
 
     user = update.message.reply_to_message.from_user
@@ -53,7 +53,7 @@ async def ban_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def unban_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not update.message.reply_to_message:
-        await update.message.reply_text("Reply to a user to unban them.")
+        await update.message.reply_text("Tag a user to unban them.")
         return
 
     user = update.message.reply_to_message.from_user
@@ -62,11 +62,3 @@ async def unban_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"Unbanned {user.mention_html()}", parse_mode='HTML')
     except Exception as e:
         await update.message.reply_text(f"Failed to unban: {e}")
-
-async def warn_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if not update.message.reply_to_message:
-        await update.message.reply_text("Reply to a user to warn them.")
-        return
-
-    user = update.message.reply_to_message.from_user
-    await update.message.reply_text(f"⚠️ Warning issued to {user.mention_html()}", parse_mode='HTML')

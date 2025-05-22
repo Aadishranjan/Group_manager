@@ -4,9 +4,11 @@ from telegram import Update
 from telegram.ext import ContextTypes
 
 photo_urls = [
-        "https://i.ibb.co/fPxCsZQ/welcome3.webp",
-        "https://i.ibb.co/Xf2xC19c/welcome.webp", "https://i.ibb.co/ZpxF6MMQ/welcome4.webp", "https://i.ibb.co/m59xPfHn/welcome2.webp"
-    ]
+    "https://i.ibb.co/fPxCsZQ/welcome3.webp",
+    "https://i.ibb.co/Xf2xC19c/welcome.webp",
+    "https://i.ibb.co/ZpxF6MMQ/welcome4.webp",
+    "https://i.ibb.co/m59xPfHn/welcome2.webp"
+]
 
 async def delete_message(context: ContextTypes.DEFAULT_TYPE):
     try:
@@ -19,9 +21,19 @@ async def delete_message(context: ContextTypes.DEFAULT_TYPE):
 async def welcome_new_member(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         for member in update.message.new_chat_members:
-            name = member.full_name
+            name = member.full_name.replace("[", "\").replace("]", "\")
+            user_link = f"[{name}](tg://user?id={member.id})"
+            group_name = update.effective_chat.title.replace("[", "\").replace("]", "\")
+
             selected_photo = random.choice(photo_urls)
-            caption = f"👋 Welcome [{name}](tg://user?id={member.id}) to *{update.effective_chat.title}*!\n\nEnjoy your stay and follow the group rules."
+
+            caption = (
+                f"Hᴇʏ ᴅᴇᴀʀ {user_link}, Wᴇʟᴄᴏᴍᴇ ᴛᴏ *{group_name}* Gʀᴏᴜᴘ.\n\n"
+                f"┏━━━━»»❀\n"
+                f"♛ ɴᴀᴍᴇ : {name}\n"
+                f"⍟ I'ᴅ : `{member.id}`\n"
+                f"┕━━━━━━━━━━━━»»❀"
+            )
 
             sent = await update.message.reply_photo(
                 photo=selected_photo,
@@ -29,10 +41,10 @@ async def welcome_new_member(update: Update, context: ContextTypes.DEFAULT_TYPE)
                 parse_mode="Markdown"
             )
 
-            # Schedule deletion after 5 minutes (300 seconds)
+            # Schedule deletion after 5 minutes
             context.job_queue.run_once(
                 delete_message,
-                when=60,
+                when=300,
                 data={"chat_id": sent.chat_id, "message_id": sent.message_id}
             )
 

@@ -11,14 +11,16 @@ from telegram.ext import (
     MessageHandler,
     ContextTypes,
     filters,
+    ChatMemberHandler,
 )
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-
 from config import BOT_TOKEN, ADMIN_ID
 from plugins.function import start
 from plugins.group import welcome_new_member
 from plugins import mute
 from plugins.antilink import delete_links
+from plugins.warn import warn_handlers
+from plugins.goodbye import goodbye_handler
 
 # Global scheduler
 scheduler = AsyncIOScheduler(timezone=timezone.utc)
@@ -26,7 +28,15 @@ scheduler = AsyncIOScheduler(timezone=timezone.utc)
 async def help_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.callback_query.answer()
     await update.callback_query.message.reply_text(
-        "Available commands:\n/start - Start the bot\n/help - Help info"
+        "Available commands:\n"
+        "/start - Start the bot\n"
+        "/help - Show this help message\n"
+        "/ban - to ban a user\n"
+        "/unban - to unban a user\n"
+        "/mute - to mute a user\n"
+        "/unmute - to unmute a user\n"
+        "/warn - tag a user and write /warn to warn them\n"
+        "Users will be banned after 3 warnings."
     )
 
 async def on_startup(application: Application):
@@ -45,11 +55,14 @@ def main():
         app.add_handler(CommandHandler("unmute", mute.unmute_user))
         app.add_handler(CommandHandler("ban", mute.ban_user))
         app.add_handler(CommandHandler("unban", mute.unban_user))
-        app.add_handler(CommandHandler("warn", mute.warn_user))
         app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), delete_links))
         app.add_handler(CallbackQueryHandler(help_callback, pattern="^help_command$"))
         app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome_new_member))
+        app.add_handler(MessageHandler(filters.StatusUpdate.LEFT_CHAT_MEMBER, goodbye_handler))
         
+        for handler in warn_handlers():
+          app.add_handler(handler)
+
 
         print("✅ Bot is running...")
         app.run_polling()
@@ -70,3 +83,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    

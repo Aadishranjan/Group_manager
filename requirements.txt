@@ -4,4 +4,4 @@ pymongo
 pytz
 tzdata
 apscheduler
-pip install -U "python-telegram-bot[job-queue]"
+python-telegram-bot[job-queue]
