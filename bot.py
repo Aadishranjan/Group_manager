@@ -20,7 +20,6 @@ from plugins.group import welcome_new_member
 from plugins import mute
 from plugins.antilink import delete_links
 
-
 # Global scheduler
 scheduler = AsyncIOScheduler(timezone=timezone.utc)
 
