@@ -21,6 +21,7 @@ from plugins import mute
 from plugins.antilink import delete_links
 from plugins.warn import warn_handlers
 from plugins.goodbye import goodbye_handler
+from plugins.broadcast import broadcast
 
 # Global scheduler
 scheduler = AsyncIOScheduler(timezone=timezone.utc)
@@ -30,7 +31,7 @@ async def help_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.callback_query.message.reply_text(
         "Available commands:\n"
         "/start - Start the bot\n"
-        "/help - Show this help message\n"
+        "/broadcast - only bot admin are allow\n"
         "/ban - to ban a user\n"
         "/unban - to unban a user\n"
         "/mute - to mute a user\n"
@@ -59,6 +60,7 @@ def main():
         app.add_handler(CallbackQueryHandler(help_callback, pattern="^help_command$"))
         app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome_new_member))
         app.add_handler(MessageHandler(filters.StatusUpdate.LEFT_CHAT_MEMBER, goodbye_handler))
+        app.add_handler(CommandHandler("broadcast", broadcast))
         
         for handler in warn_handlers():
           app.add_handler(handler)

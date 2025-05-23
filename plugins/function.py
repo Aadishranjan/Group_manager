@@ -1,15 +1,23 @@
-import random
-import logging
-from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
-
+import random, logging
+from database.db import save_chat  # Create this function in db.py
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     photo_urls = [
         "https://i.ibb.co/fPxCsZQ/welcome3.webp",
-        "https://i.ibb.co/Xf2xC19c/welcome.webp", "https://i.ibb.co/ZpxF6MMQ/welcome4.webp", "https://i.ibb.co/m59xPfHn/welcome2.webp"
+        "https://i.ibb.co/Xf2xC19c/welcome.webp",
+        "https://i.ibb.co/ZpxF6MMQ/welcome4.webp",
+        "https://i.ibb.co/m59xPfHn/welcome2.webp"
     ]
     selected_photo = random.choice(photo_urls)
+
+    # Save chat or user id
+    chat = update.effective_chat
+    if chat.type in ["group", "supergroup"]:
+        await save_chat(chat.id, "group", chat.title)
+    elif chat.type == "private":
+        await save_chat(chat.id, "private", update.effective_user.full_name)
 
     caption = (
         "👋 **Welcome to Group Manager Bot!**\n\n"
