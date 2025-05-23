@@ -1,4 +1,4 @@
-python-telegram-bot[job-queue]==20.6
+python-telegram-bot[job-queue]==20.8
 python-dotenv
 pymongo
 pytz
