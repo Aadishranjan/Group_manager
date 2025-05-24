@@ -1,3 +1,19 @@
+# --- Flask server for Render/Heroku ---
+from flask import Flask
+import threading
+import os
+
+flask_app = Flask(__name__)
+
+@flask_app.route("/")
+def home():
+    return "Bot is running!"
+
+def run_server():
+    port = int(os.getenv("PORT", 8080))
+    flask_app.run(host="0.0.0.0", port=port)
+
+# --- Bot imports ---
 import asyncio
 import logging
 import sys
@@ -51,7 +67,6 @@ def main():
 
         # Handlers
         app.add_handler(CommandHandler("start", start))
-        
         app.add_handler(CommandHandler("mute", mute.mute_user))
         app.add_handler(CommandHandler("unmute", mute.unmute_user))
         app.add_handler(CommandHandler("ban", mute.ban_user))
@@ -61,10 +76,8 @@ def main():
         app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome_new_member))
         app.add_handler(MessageHandler(filters.StatusUpdate.LEFT_CHAT_MEMBER, goodbye_handler))
         app.add_handler(CommandHandler("broadcast", broadcast))
-        
         for handler in warn_handlers():
-          app.add_handler(handler)
-
+            app.add_handler(handler)
 
         print("✅ Bot is running...")
         app.run_polling()
@@ -84,5 +97,6 @@ def main():
         sys.exit(1)
 
 if __name__ == "__main__":
+    # Run Flask server in background for Render/Heroku
+    threading.Thread(target=run_server).start()
     main()
-    
