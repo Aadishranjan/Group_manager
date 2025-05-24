@@ -72,6 +72,7 @@ def main():
         app.add_handler(CommandHandler("ban", mute.ban_user))
         app.add_handler(CommandHandler("unban", mute.unban_user))
         app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), delete_links))
+        app.add_handler(MessageHandler(filters.Caption(), delete_links))
         app.add_handler(CallbackQueryHandler(help_callback, pattern="^help_command$"))
         app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome_new_member))
         app.add_handler(MessageHandler(filters.StatusUpdate.LEFT_CHAT_MEMBER, goodbye_handler))
