@@ -1,8 +1,20 @@
-from telegram import Update, User
+from telegram import Update, User, ChatMember
 from telegram.ext import ContextTypes, CommandHandler
 from database.warn_db import add_warn, reset_warns
 
+# Helper to check if command issuer is admin
+async def is_user_admin(update: Update, user_id: int) -> bool:
+    try:
+        member = await update.effective_chat.get_member(user_id)
+        return member.status in [ChatMember.ADMINISTRATOR, ChatMember.OWNER]
+    except:
+        return False
+
 async def warn_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not await is_user_admin(update, update.effective_user.id):
+        await update.message.reply_text("Only admins can issue warnings.")
+        return
+
     user: User = None
     chat_id = update.effective_chat.id
 
@@ -16,13 +28,13 @@ async def warn_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
             arg = context.args[0]
             if arg.startswith("@"):
                 arg = arg[1:]
-            user = await context.bot.get_chat_member(chat_id, arg)
-            user = user.user
-        except Exception as e:
+            member = await context.bot.get_chat_member(chat_id, arg)
+            user = member.user
+        except Exception:
             await update.message.reply_text("Couldn't find that user.")
             return
     else:
-        await update.message.reply_text("Tag a user and write /warn to warn.")
+        await update.message.reply_text("Tag a user or reply to them with /warn.")
         return
 
     warn_count = add_warn(user.id, chat_id)
