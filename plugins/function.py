@@ -26,7 +26,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "• Welcome messages\n"
         "• Anti-link protection\n"
         "• Mute, ban, warn system\n\n"
-        "🤖 Developed and managed by [aadish](https://t.me/aadishranjan)\n"
+        "🤖 Developed and managed by [Aadish](https://t.me/aadishranjan)\n"
     )
 
     keyboard = InlineKeyboardMarkup([
