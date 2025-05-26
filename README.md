@@ -1,6 +1,6 @@
 # **Group Manager**
 
-![Bot](https://i.ibb.co/fPxCsZQ/welcome3.webp) <!-- Replace with your actual image URL -->
+![Bot](./welcome3.webp) <!-- Replace with your actual image URL -->
 
 A powerful Telegram group management bot built using Python and `python-telegram-bot`. Manage your groups with ease using commands like mute, ban, welcome messages, and more.
 
