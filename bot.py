@@ -18,7 +18,6 @@ import asyncio
 import logging
 import sys
 import traceback
-from datetime import timezone
 from telegram import Update, Bot
 from telegram.ext import (
     Application,
@@ -29,18 +28,17 @@ from telegram.ext import (
     filters,
     ChatMemberHandler,
 )
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from config import BOT_TOKEN, ADMIN_ID
 from plugins.function import start
 from plugins.group import welcome_new_member
 from plugins import mute
 from plugins.antilink import delete_links
 from plugins.warn import warn_handlers
-from plugins.goodbye import goodbye_handler
 from plugins.broadcast import broadcast
-
-# Global scheduler
-scheduler = AsyncIOScheduler(timezone=timezone.utc)
+from plugins.promote import promote
+from plugins.demote import demote
+from plugins.settitle import set_title
+from plugins.adminlist import admin_list
 
 async def help_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.callback_query.answer()
@@ -56,14 +54,10 @@ async def help_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Users will be banned after 3 warnings."
     )
 
-async def on_startup(application: Application):
-    scheduler.start()
-    application.job_queue.scheduler = scheduler
-    print("✅ Scheduler started.")
 
 def main():
     try:
-        app = Application.builder().token(BOT_TOKEN).post_init(on_startup).build()
+        app = Application.builder().token(BOT_TOKEN).build()
 
         # Handlers
         app.add_handler(CommandHandler("start", start))
@@ -75,8 +69,11 @@ def main():
         app.add_handler(MessageHandler(filters.Caption(), delete_links))
         app.add_handler(CallbackQueryHandler(help_callback, pattern="^help_command$"))
         app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome_new_member))
-        app.add_handler(MessageHandler(filters.StatusUpdate.LEFT_CHAT_MEMBER, goodbye_handler))
         app.add_handler(CommandHandler("broadcast", broadcast))
+        app.add_handler(CommandHandler("promote", promote))
+        app.add_handler(CommandHandler("demote", demote))
+        app.add_handler(CommandHandler("settitle", set_title))
+        app.add_handler(CommandHandler("adminlist", admin_list))
         for handler in warn_handlers():
             app.add_handler(handler)
 
