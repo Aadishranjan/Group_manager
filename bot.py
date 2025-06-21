@@ -39,6 +39,7 @@ from plugins.promote import promote
 from plugins.demote import demote
 from plugins.settitle import set_title
 from plugins.adminlist import admin_list
+from plugins.kick import kick_user
 
 async def help_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.callback_query.answer()
@@ -61,18 +62,19 @@ def main():
 
         # Handlers
         app.add_handler(CommandHandler("start", start))
+        app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome_new_member))
         app.add_handler(CommandHandler("mute", mute.mute_user))
         app.add_handler(CommandHandler("unmute", mute.unmute_user))
         app.add_handler(CommandHandler("ban", mute.ban_user))
         app.add_handler(CommandHandler("unban", mute.unban_user))
+        app.add_handler(CommandHandler("kick", kick_user))
         app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), delete_links))
         app.add_handler(MessageHandler(filters.Caption(), delete_links))
         app.add_handler(CallbackQueryHandler(help_callback, pattern="^help_command$"))
-        app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome_new_member))
         app.add_handler(CommandHandler("broadcast", broadcast))
         app.add_handler(CommandHandler("promote", promote))
         app.add_handler(CommandHandler("demote", demote))
-        app.add_handler(CommandHandler("settitle", set_title))
+        app.add_handler(CommandHandler("plate", set_title))
         app.add_handler(CommandHandler("adminlist", admin_list))
         for handler in warn_handlers():
             app.add_handler(handler)
