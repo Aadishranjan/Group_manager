@@ -5,6 +5,8 @@ from utils.user_id import get_user_id_from_username
 MUTE_PERMISSIONS = ChatPermissions(can_send_messages=False)
 UNMUTE_PERMISSIONS = ChatPermissions(can_send_messages=True)
 
+
+# 🔍 Check if user is admin
 async def is_user_admin(update: Update, user_id: int) -> bool:
     try:
         member = await update.effective_chat.get_member(user_id)
@@ -12,7 +14,8 @@ async def is_user_admin(update: Update, user_id: int) -> bool:
     except:
         return False
 
-# 🔹 Helper: Get target user_id from reply, @username, or ID
+
+# 🔹 Extract user from reply, @username, or ID
 async def extract_target_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = None
     user_id = None
@@ -40,6 +43,7 @@ async def extract_target_user(update: Update, context: ContextTypes.DEFAULT_TYPE
         return None, None
 
 
+# 🔇 Mute command
 async def mute_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not await is_user_admin(update, update.effective_user.id):
         await update.message.reply_text("❌ You must be an admin to use this command.")
@@ -49,6 +53,10 @@ async def mute_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not user_id:
         return
 
+    if await is_user_admin(update, user_id):
+        await update.message.reply_text("⚠️ You cannot mute another admin.")
+        return
+
     try:
         await context.bot.restrict_chat_member(update.effective_chat.id, user_id, permissions=MUTE_PERMISSIONS)
         await update.message.reply_text(f"🔇 Muted <code>{user_id}</code>", parse_mode='HTML')
@@ -56,6 +64,7 @@ async def mute_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"❌ Failed to mute: {e}")
 
 
+# 🔊 Unmute command
 async def unmute_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not await is_user_admin(update, update.effective_user.id):
         await update.message.reply_text("❌ You must be an admin to use this command.")
@@ -65,6 +74,10 @@ async def unmute_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not user_id:
         return
 
+    if await is_user_admin(update, user_id):
+        await update.message.reply_text("⚠️ That user is an admin and shouldn't be unmuted manually.")
+        return
+
     try:
         await context.bot.restrict_chat_member(update.effective_chat.id, user_id, permissions=UNMUTE_PERMISSIONS)
         await update.message.reply_text(f"🔊 Unmuted <code>{user_id}</code>", parse_mode='HTML')
@@ -72,6 +85,7 @@ async def unmute_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"❌ Failed to unmute: {e}")
 
 
+# 🚫 Ban command
 async def ban_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not await is_user_admin(update, update.effective_user.id):
         await update.message.reply_text("❌ You must be an admin to use this command.")
@@ -81,6 +95,10 @@ async def ban_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not user_id:
         return
 
+    if await is_user_admin(update, user_id):
+        await update.message.reply_text("⚠️ You cannot ban another admin.")
+        return
+
     try:
         await context.bot.ban_chat_member(update.effective_chat.id, user_id)
         await update.message.reply_text(f"🚫 Banned <code>{user_id}</code>", parse_mode='HTML')
@@ -88,6 +106,7 @@ async def ban_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"❌ Failed to ban: {e}")
 
 
+# ✅ Unban command
 async def unban_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not await is_user_admin(update, update.effective_user.id):
         await update.message.reply_text("❌ You must be an admin to use this command.")

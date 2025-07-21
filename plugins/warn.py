@@ -29,17 +29,26 @@ async def warn_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
         arg = context.args[0]
         if arg.isdigit():
             user_id = int(arg)
-            
         elif arg.startswith("@"):
-          user_id = await get_user_id_from_username(arg)
-          if not user_id:
-            await update.message.reply_text("User not found in database.")
-            return
+            user_id = await get_user_id_from_username(arg)
+            if not user_id:
+                await update.message.reply_text("User not found in database.")
+                return
         else:
             await update.message.reply_text("Invalid argument. Use /warn @username or user_id.")
             return
     else:
         await update.message.reply_text("Reply to a user or use /warn @username or user_id.")
+        return
+
+    # Prevent warning the bot itself
+    if user_id == context.bot.id:
+        await update.message.reply_text("I can't warn myself 😅")
+        return
+
+    # Prevent banning admins
+    if await is_user_admin(update, user_id):
+        await update.message.reply_text("You can't warn or ban another admin.")
         return
 
     warn_count = add_warn(user_id, chat_id)
