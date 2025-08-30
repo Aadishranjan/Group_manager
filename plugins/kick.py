@@ -40,7 +40,7 @@ async def kick_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # 🔐 Prevent kicking other admins
     if await is_user_admin(update, user_id):
-        await update.message.reply_text("⚠️ You cannot kick another admin.")
+        await update.message.reply_text("⚠️ Why would I kick an admin? That sound like pretty dumb idea.")
         return
 
     # 🚫 Kick user
