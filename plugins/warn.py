@@ -48,7 +48,7 @@ async def warn_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # Prevent banning admins
     if await is_user_admin(update, user_id):
-        await update.message.reply_text("You can't warn or ban another admin.")
+        await update.message.reply_text("Why would I  warn an admin? That sound like pretty dumb idea.")
         return
 
     warn_count = add_warn(user_id, chat_id)
