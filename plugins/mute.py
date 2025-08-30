@@ -54,7 +54,7 @@ async def mute_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if await is_user_admin(update, user_id):
-        await update.message.reply_text("⚠️ You cannot mute another admin.")
+        await update.message.reply_text("⚠️ Why would I mute an admin? That sound like pretty dumb idea.")
         return
 
     try:
@@ -96,7 +96,7 @@ async def ban_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if await is_user_admin(update, user_id):
-        await update.message.reply_text("⚠️ You cannot ban another admin.")
+        await update.message.reply_text("⚠️ Why would I  ban an admin? That sound like pretty dumb idea.")
         return
 
     try:
