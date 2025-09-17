@@ -49,7 +49,7 @@ async def promote(update: Update, context: ContextTypes.DEFAULT_TYPE):
         can_restrict_members=False,
         can_promote_members=False,
         can_change_info=False,
-        can_invite_users=True,
+        can_invite_users=False,
         can_pin_messages=True,
         is_anonymous=False
     )
